@@ -7,6 +7,9 @@ import { NodePgDatabase, drizzle } from "drizzle-orm/node-postgres";
 import { Client as PGClient } from "pg";
 import { CronJob } from "cron";
 import { daily } from "./dailies";
+import express from 'express';
+
+const app = express();
 
 const client = new Client({
     intents: [GatewayIntentBits.GuildMessages],
@@ -55,6 +58,12 @@ new CronJob(
     true,
     "Europe/London",
 );
+
+app.get('/', (req, res) => {
+    res.send('Hello World!');
+});
+
+app.listen(process.env.PORT || 3000);
 
 client.login(process.env.TOKEN);
 
