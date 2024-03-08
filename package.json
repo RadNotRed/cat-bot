@@ -1,0 +1,11 @@
+{
+    "name": "cat-bot",
+    "devDependencies": {
+        "tsx": "^4.7.1",
+        "typescript": "^5.4.2"
+    },
+    "dependencies": {
+        "discord.js": "^14.14.1",
+        "dotenv": "^16.4.5"
+    }
+}
