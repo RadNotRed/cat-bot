@@ -1,5 +1,5 @@
 import { Command } from "../types";
-import { EmbedBuilder } from "discord.js";
+import { EmbedBuilder, PermissionsBitField } from "discord.js";
 import { db } from "..";
 import { servers } from "../../db/schema";
 import { eq } from "drizzle-orm";
@@ -47,7 +47,9 @@ export default {
             description: "The value to set the option to, true/false or yes/no",
         },
     ],
+    dm_permission: false,
     run: async (interaction) => {
+        if((interaction.member?.permissions as PermissionsBitField & 0x5) !== 0x5) return interaction.reply({ content: "You need to have the manage server permission to use this command", ephemeral: true });
         const option = interaction.options.getString("option", false)
         if (!option) {
             let record = (await db
