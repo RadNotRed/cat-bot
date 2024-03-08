@@ -3,7 +3,6 @@ import { servers } from "../db/schema";
 import { Client, TextChannel } from "discord.js";
 import axios from "axios";
 import "dotenv/config";
-import facts from "../facts.json";
 
 export async function daily(db: NodePgDatabase, client: Client) {
     const res = await db.select().from(servers);
@@ -53,6 +52,6 @@ async function cat_image(): Promise<string> {
     ).data.url;
 }
 
-function cat_fact(): string {
-    return facts[Math.floor(Math.random() * facts.length)];
+async function cat_fact(): Promise<string> {
+    return (await axios.get("https://catfact.ninja/fact")).data.fact;
 }
