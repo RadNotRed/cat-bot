@@ -5,12 +5,11 @@ import fs from "node:fs";
 import { Command } from "./types";
 import { drizzle } from "drizzle-orm/better-sqlite3";
 import Database from "better-sqlite3";
-import { servers } from "../db/schema";
 import { CronJob } from "cron";
 import { daily } from "./dailies";
 
 const sqlite = new Database("./db/data.db");
-const db = drizzle(sqlite);
+export const db = drizzle(sqlite);
 
 const client = new Client({
     intents: [GatewayIntentBits.GuildMessages],

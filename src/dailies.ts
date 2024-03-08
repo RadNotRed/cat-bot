@@ -1,6 +1,6 @@
 import { BetterSQLite3Database } from "drizzle-orm/better-sqlite3";
 import { servers } from "../db/schema";
-import { Client, GuildTextChannelType, TextChannel } from "discord.js";
+import { Client, TextChannel } from "discord.js";
 import axios from "axios";
 import "dotenv/config";
 import facts from "../facts.json";
