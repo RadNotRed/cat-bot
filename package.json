@@ -1,5 +1,10 @@
 {
     "name": "cat-bot",
+    "scripts": {
+        "dev": "tsx src/index.ts",
+        "dev:watch": "tsx src/index.ts --watch",
+        "registerCommands": "node ./scripts/register-commands.mjs"
+    },
     "devDependencies": {
         "tsx": "^4.7.1",
         "typescript": "^5.4.2"
