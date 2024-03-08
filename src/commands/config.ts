@@ -85,7 +85,7 @@ export default {
                 });
                 break;
             }
-            case "photos_channel": {
+            case "photo_channel": {
                 const channel = interaction.options.getChannel("channel_value", true);
                 if(!channel) return;
                 await db.insert(servers).values({
