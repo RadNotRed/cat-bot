@@ -8,6 +8,8 @@ import facts from "../facts.json";
 export async function daily(db: NodePgDatabase, client: Client) {
     const res = await db.select().from(servers);
     if (!res) return;
+    const fact = cat_fact();
+    const image = await cat_image();
     for (const guildInfo of res) {
         let guild = client.guilds.cache.get(guildInfo.id);
         if (!guild) guild = await client.guilds.fetch(guildInfo.id);
@@ -23,7 +25,7 @@ export async function daily(db: NodePgDatabase, client: Client) {
                         guildInfo.fact_channel,
                     )) as TextChannel | null) || undefined;
             if (!fact_channel) continue;
-            fact_channel.send(`Today's cat fact:\n${cat_fact()}`);
+            fact_channel.send(`Today's cat fact:\n${fact}`);
         }
         if (guildInfo.photo_channel && guildInfo.send_photos) {
             let photo_channel: TextChannel | undefined =
@@ -37,7 +39,7 @@ export async function daily(db: NodePgDatabase, client: Client) {
                     )) as TextChannel | null) || undefined;
             if (!photo_channel) continue;
             photo_channel.send(
-                `[Your daily cat image! : 3](${await cat_image()})`,
+                `[Your daily cat image! : 3](${image})`,
             );
         }
     }
