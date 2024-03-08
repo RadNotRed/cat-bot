@@ -52,6 +52,6 @@ async function cat_image(): Promise<string> {
     ).data.url;
 }
 
-async function cat_fact(): Promise<string> {
+export async function cat_fact(): Promise<string> {
     return (await axios.get("https://catfact.ninja/fact")).data.fact;
 }
