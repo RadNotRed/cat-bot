@@ -49,7 +49,7 @@ export default {
     ],
     dm_permission: false,
     run: async (interaction) => {
-        if((interaction.member?.permissions as PermissionsBitField & 0x5) !== 0x5) return interaction.reply({ content: "You need to have the manage server permission to use this command", ephemeral: true });
+        if (interaction.memberPermissions && ((BigInt(interaction.memberPermissions.bitfield) & BigInt(0x5)) !== BigInt(0x5))) return interaction.reply({ content: "You need to have the manage server permission to use this command", ephemeral: true });
         const option = interaction.options.getString("option", false)
         if (!option) {
             let record = (await db
