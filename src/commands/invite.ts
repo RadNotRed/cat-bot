@@ -6,4 +6,4 @@ export default {
     run: async (interaction) => {
         interaction.reply({ content: "https://discord.com/oauth2/authorize?client_id=1215749607657836606&permissions=18432&scope=bot+applications.commands", ephemeral: true });
     },
-} as Command;
+} satisfies Command;
