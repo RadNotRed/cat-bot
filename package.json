@@ -3,7 +3,7 @@
     "scripts": {
         "dev": "tsx src/index.ts",
         "dev:watch": "tsx src/index.ts --watch",
-        "registerCommands": "node ./scripts/register-commands.mjs"
+        "registerCommands": "tsx scripts/registerCommands.ts"
     },
     "devDependencies": {
         "tsx": "^4.7.1",

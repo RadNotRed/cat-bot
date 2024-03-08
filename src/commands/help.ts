@@ -13,10 +13,10 @@ export default {
             )
             .addFields(
                 Array.from(commands).map(([name, command]) => ({
-                    name,
+                    name: `/${name}`,
                     value: command.description,
                 })),
             );
-        interaction.reply({ embeds: [embed]  });
+        interaction.reply({ embeds: [embed] });
     },
 } satisfies Command;

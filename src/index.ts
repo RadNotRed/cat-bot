@@ -1,5 +1,6 @@
 import "dotenv/config";
 import { Client, GatewayIntentBits } from "discord.js";
+import path from "node:path";
 import fs from "node:fs";
 import { Command } from "./types";
 
@@ -10,10 +11,13 @@ const client = new Client({
 export const commands = new Map<string, Command>();
 
 client.on("ready", async () => {
-    fs.readdirSync("./commands").forEach(async (file) => {
-        const command = await import("./commands/" + file);
-        commands.set(command.name, command);
-    });
+    fs.readdirSync(path.join(process.cwd(), "/src/commands")).forEach(
+        async (file) => {
+            const command: Command = (await import("./commands/" + file))
+                .default;
+            commands.set(command.name, command);
+        },
+    );
 });
 
 client.on("interactionCreate", async (interaction) => {
