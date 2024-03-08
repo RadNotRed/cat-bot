@@ -3,6 +3,14 @@ import { Client, GatewayIntentBits } from "discord.js";
 import path from "node:path";
 import fs from "node:fs";
 import { Command } from "./types";
+import { drizzle } from "drizzle-orm/better-sqlite3";
+import Database from "better-sqlite3";
+import { servers } from "../db/schema";
+import { CronJob } from "cron";
+import { daily } from "./dailies";
+
+const sqlite = new Database("./db/data.db");
+const db = drizzle(sqlite);
 
 const client = new Client({
     intents: [GatewayIntentBits.GuildMessages],
@@ -27,4 +35,16 @@ client.on("interactionCreate", async (interaction) => {
     await command.run(interaction);
 });
 
+new CronJob(
+    "0 0 * * *",
+    async function () {
+        await daily(db, client);
+    },
+    null,
+    true,
+    "Europe/London",
+);
+
 client.login(process.env.TOKEN);
+
+console.log("Bot is running");

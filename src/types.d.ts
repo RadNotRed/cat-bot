@@ -5,7 +5,7 @@ export type Command = {
     description: string;
     options?: ApplicationCommandOption[];
     dm_permission?: boolean;
-    run: (interaction: CommandInteraction) => Promise<void>;
+    run: (interaction: CommandInteraction) => Promise<unknown>;
 };
 
 export type CommandNoRun = Omit<Command, "run">;
