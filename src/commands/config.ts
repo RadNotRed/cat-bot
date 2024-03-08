@@ -11,7 +11,7 @@ const choices = [
     },
     {
         name: "Photos Channel (use channel_value to set)",
-        value: "photos_channel",
+        value: "photo_channel",
     },
     {
         name: "Send Facts (use boolean_value to set)",
@@ -48,14 +48,77 @@ export default {
         },
     ],
     run: async (interaction) => {
-        const option = interaction.options.get("option", false) as
-            | string
-            | null;
+        const option = interaction.options.getString("option", false)
         if (!option) {
-            const record = await db
+            let record = (await db
                 .select()
                 .from(servers)
-                .where(eq(servers.id, interaction.guildId as string));
+                .where(eq(servers.id, interaction.guildId as string)))[0];
+            if(!record) record = {
+                id: interaction.guildId as string,
+                fact_channel: null,
+                photo_channel: null,
+                send_facts: false,
+                send_photos: false
+            };
+            const embed = new EmbedBuilder()
+                .setTitle("Server Config")
+                .addFields(Object.keys(record).filter((key) => key !== 'id').map((key) => { return {
+                    name: choices.find((c) => c.value === key)?.name.split(" (")[0] || key,
+                    value: String(record[key] ?? "Not set"),
+                }}))
+                .setFooter({ text: "Use /config and specify an option to set it" });
+            await interaction.reply({ embeds: [embed] });
+        }
+        switch(option) {
+            case "fact_channel": {
+                const channel = interaction.options.getChannel("channel_value", true);
+                if(!channel) return;
+                await db.insert(servers).values({
+                    id: interaction.guildId as string,
+                    fact_channel: channel.id,
+                });
+                await interaction.reply({
+                    content: `Set fact channel to ${channel}`,
+                });
+                break;
+            }
+            case "photos_channel": {
+                const channel = interaction.options.getChannel("channel_value", true);
+                if(!channel) return;
+                await db.insert(servers).values({
+                    id: interaction.guildId as string,
+                    photo_channel: channel.id,
+                });
+                await interaction.reply({
+                    content: `Set photo channel to ${channel}`,
+                });
+                break;
+            }
+            case "send_facts": {
+                const value = interaction.options.getBoolean("boolean_value", true);
+                if(!value) return;
+                await db.insert(servers).values({
+                    id: interaction.guildId as string,
+                    send_facts: value,
+                });
+                await interaction.reply({
+                    content: `Set send facts to ${value}`,
+                });
+                break;
+            }
+            case "send_photos": {
+                const value = interaction.options.getBoolean("boolean_value", true);
+                if(!value) return;
+                await db.insert(servers).values({
+                    id: interaction.guildId as string,
+                    send_photos: value,
+                });
+                await interaction.reply({
+                    content: `Set send photos to ${value}`,
+                });
+                break;
+            }
         }
     },
 } satisfies Command;

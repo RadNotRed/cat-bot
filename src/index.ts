@@ -3,21 +3,33 @@ import { Client, GatewayIntentBits } from "discord.js";
 import path from "node:path";
 import fs from "node:fs";
 import { Command } from "./types";
-import { drizzle } from "drizzle-orm/better-sqlite3";
-import Database from "better-sqlite3";
+import { NodePgDatabase, drizzle } from "drizzle-orm/node-postgres";
+import { Client as PGClient } from "pg";
 import { CronJob } from "cron";
 import { daily } from "./dailies";
-
-const sqlite = new Database("./db/data.db");
-export const db = drizzle(sqlite);
 
 const client = new Client({
     intents: [GatewayIntentBits.GuildMessages],
 });
 
+
+
+export let db: NodePgDatabase;
+
 export const commands = new Map<string, Command>();
 
 client.on("ready", async () => {
+    const pgClient = new PGClient({
+        connectionString: process.env.DATABASE_URL,
+        ssl: {
+            rejectUnauthorized: false,
+        },
+    });
+    
+    await pgClient.connect();
+
+    db = drizzle(pgClient);
+
     fs.readdirSync(path.join(process.cwd(), "/src/commands")).forEach(
         async (file) => {
             const command: Command = (await import("./commands/" + file))
@@ -28,7 +40,7 @@ client.on("ready", async () => {
 });
 
 client.on("interactionCreate", async (interaction) => {
-    if (!interaction.isCommand()) return;
+    if (!interaction.isChatInputCommand()) return;
     const command = commands.get(interaction.commandName);
     if (!command) return;
     await command.run(interaction);

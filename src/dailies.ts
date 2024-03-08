@@ -1,18 +1,18 @@
-import { BetterSQLite3Database } from "drizzle-orm/better-sqlite3";
+import { NodePgDatabase } from "drizzle-orm/node-postgres";
 import { servers } from "../db/schema";
 import { Client, TextChannel } from "discord.js";
 import axios from "axios";
 import "dotenv/config";
 import facts from "../facts.json";
 
-export async function daily(db: BetterSQLite3Database, client: Client) {
+export async function daily(db: NodePgDatabase, client: Client) {
     const res = await db.select().from(servers);
     if (!res) return;
     for (const guildInfo of res) {
         let guild = client.guilds.cache.get(guildInfo.id);
         if (!guild) guild = await client.guilds.fetch(guildInfo.id);
         if (!guild) return;
-        if (guildInfo.fact_channel) {
+        if (guildInfo.fact_channel && guildInfo.send_facts) {
             let fact_channel: TextChannel | undefined =
                 guild.channels.cache.get(guildInfo.fact_channel) as
                     | TextChannel
@@ -25,7 +25,7 @@ export async function daily(db: BetterSQLite3Database, client: Client) {
             if (!fact_channel) continue;
             fact_channel.send(`Today's cat fact:\n${cat_fact()}`);
         }
-        if (guildInfo.photo_channel) {
+        if (guildInfo.photo_channel && guildInfo.send_photos) {
             let photo_channel: TextChannel | undefined =
                 guild.channels.cache.get(guildInfo.photo_channel) as
                     | TextChannel
