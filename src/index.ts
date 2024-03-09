@@ -7,15 +7,13 @@ import { NodePgDatabase, drizzle } from "drizzle-orm/node-postgres";
 import { Client as PGClient } from "pg";
 import { CronJob } from "cron";
 import { daily } from "./dailies";
-import express from 'express';
+import express, { Response } from "express";
 
 const app = express();
 
 const client = new Client({
     intents: [GatewayIntentBits.GuildMessages],
 });
-
-
 
 export let db: NodePgDatabase;
 
@@ -28,7 +26,7 @@ client.on("ready", async () => {
             rejectUnauthorized: false,
         },
     });
-    
+
     await pgClient.connect();
 
     db = drizzle(pgClient);
@@ -39,6 +37,10 @@ client.on("ready", async () => {
                 .default;
             commands.set(command.name, command);
         },
+    );
+
+    console.log(
+        `Bot is in servers with id: ${client.guilds.cache.map((guild) => guild.id).join(", ")}, it has now started`,
     );
 });
 
@@ -56,15 +58,13 @@ new CronJob(
     },
     null,
     true,
-    "Europe/London",
-);
+    "utc",
+); // i hope this runs honestly :sob:
 
-app.get('/', (req, res) => {
-    res.send('Hello World!');
+app.get("/", (res: Response) => {
+    res.send("Hello World!");
 });
 
 app.listen(process.env.PORT || 3000);
 
 client.login(process.env.TOKEN);
-
-console.log("Bot is running");
