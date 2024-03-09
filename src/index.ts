@@ -8,6 +8,7 @@ import { Client as PGClient } from "pg";
 import { CronJob } from "cron";
 import { daily } from "./dailies";
 import express, { Response } from "express";
+import { updateBotAvatar } from "./updateAvatar";
 
 const app = express();
 
@@ -55,6 +56,7 @@ new CronJob(
     "0 0 * * *",
     async function () {
         await daily(db, client);
+        await updateBotAvatar(client);
     },
     null,
     true,
