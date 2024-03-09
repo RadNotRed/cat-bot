@@ -8,7 +8,6 @@ import { Client as PGClient } from "pg";
 import { CronJob } from "cron";
 import { daily } from "./dailies";
 import express, { Response } from "express";
-import { updateBotAvatar } from "./updateAvatar";
 
 const app = express();
 
@@ -32,9 +31,10 @@ client.on("ready", async () => {
 
     db = drizzle(pgClient);
 
-    for (const file of fs.readdirSync(path.join(process.cwd(), "/src/commands"))) {
-        const command: Command = (await import("./commands/" + file))
-            .default;
+    for (const file of fs.readdirSync(
+        path.join(process.cwd(), "/src/commands"),
+    )) {
+        const command: Command = (await import("./commands/" + file)).default;
         commands.set(command.name, command);
     }
 
@@ -54,7 +54,6 @@ new CronJob(
     "0 0 * * *",
     async function () {
         await daily(db, client);
-        await updateBotAvatar(client);
     },
     null,
     true,
