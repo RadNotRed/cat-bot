@@ -17,6 +17,6 @@ export default {
                     value: command.description,
                 })),
             );
-        interaction.reply({ embeds: [embed] });
+        await interaction.reply({embeds: [embed]});
     },
 } satisfies Command;

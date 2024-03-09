@@ -32,13 +32,11 @@ client.on("ready", async () => {
 
     db = drizzle(pgClient);
 
-    fs.readdirSync(path.join(process.cwd(), "/src/commands")).forEach(
-        async (file) => {
-            const command: Command = (await import("./commands/" + file))
-                .default;
-            commands.set(command.name, command);
-        },
-    );
+    for (const file of fs.readdirSync(path.join(process.cwd(), "/src/commands"))) {
+        const command: Command = (await import("./commands/" + file))
+            .default;
+        commands.set(command.name, command);
+    }
 
     console.log(
         `Bot is in servers with id: ${client.guilds.cache.map((guild) => guild.id).join(", ")}, it has now started`,

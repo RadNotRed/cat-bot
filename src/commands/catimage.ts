@@ -1,8 +1,9 @@
 import { Command } from '../types';
 import { cat_image } from '../dailies';
-import { AttachmentBuilder } from 'discord.js';
-import { db } from '../index';
-import { sql } from 'drizzle-orm';
+import { AttachmentBuilder, BufferResolvable} from 'discord.js';
+import {db} from '../index';
+import {sql} from 'drizzle-orm';
+import {Stream} from 'stream';
 
 const cooldown = new Set();
 
@@ -17,7 +18,7 @@ export default {
         cooldown.add(interaction.user.id);
         setTimeout(() => cooldown.delete(interaction.user.id), 10000); // 10 seconds
 
-        let imageUrl;
+        let imageUrl: BufferResolvable | Stream;
 
         try {
             imageUrl = await cat_image(db);

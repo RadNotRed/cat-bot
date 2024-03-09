@@ -23,7 +23,7 @@ async function registerCommands() {
             process.env.TOKEN as string,
         );
         await rest.put(
-            Routes.applicationCommands(process.env.CLIENT_ID as string),
+            Routes.applicationCommands(process.env.CLIENT_ID),
             {
                 body: commands,
             },
